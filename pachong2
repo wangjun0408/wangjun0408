@@ -1,0 +1,46 @@
+### 爬去网站的所有动画
+#网址：https://www.acgndog.com/
+
+import requests
+from bs4 import BeautifulSoup
+
+headers = {
+    'Users-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:124.0) Gecko/20100101 Firefox/124.0'
+}
+response = requests.get('https://www.acgndog.com/')
+def scrape_anime_list(url):
+    # 发送 GET 请求获取网页内容
+    response = requests.get(url)
+
+    # 检查响应是否成功
+    if response.status_code == 200:
+        # 使用 BeautifulSoup 解析 HTML
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        # 找到动画列表的容器
+        anime_container = soup.find('div', class_='anime-list')
+
+        # 调试输出
+        print("Anime container:", anime_container)
+
+        if anime_container:
+            # 提取每部动画的信息
+            anime_list = anime_container.find_all('li')
+
+            # 遍历动画列表并打印信息
+            for anime in anime_list:
+                # 获取动画名称
+                anime_name = anime.find('a').text.strip()
+                print("Anime name:", anime_name)
+
+                # 获取动画的其他信息，比如链接、图片等，根据需要自行提取
+        else:
+            print("Failed to find anime container.")
+    else:
+        print("Failed to retrieve anime list. Status code:", response.status_code)
+
+# 要爬取的网站 URL
+url = "https://www.acgndog.com/"
+
+# 调用函数来爬取动画列表
+scrape_anime_list(url)
